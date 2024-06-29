@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ReactPractice",
-    "slug": "ReactPractice",
+    "name": "todoApp-lab01",
+    "slug": "todoApp-lab01",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
