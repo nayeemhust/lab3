@@ -1,24 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, View, TextInput, Button, FlatList, Text, TouchableOpacity } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { db } from './firebaseConfig';
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 
 const App = () => {
   const [todoList, setTodoList] = useState([]);
   const [taskName, setTaskName] = useState('');
 
-  const handleAddTask = () => {
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const querySnapshot = await getDocs(collection(db, "tasks"));
+      const tasks = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setTodoList(tasks);
+    };
+
+    fetchTasks();
+  }, []);
+
+  const handleAddTask = async () => {
     if (taskName.trim()) {
-      setTodoList([...todoList, { id: Date.now().toString(), title: taskName, status: false }]);
+      const newTask = { title: taskName, status: 'due' };
+      const docRef = await addDoc(collection(db, "tasks"), newTask);
+      setTodoList([...todoList, { id: docRef.id, ...newTask }]);
       setTaskName('');
     }
   };
 
-  const handleToggleStatus = (id) => {
-    setTodoList(todoList.map(task => task.id === id ? { ...task, status: !task.status } : task));
+  const handleToggleStatus = async (id) => {
+    const task = todoList.find(task => task.id === id);
+    const newStatus = task.status === 'due' ? 'done' : 'due';
+    await updateDoc(doc(db, "tasks", id), { status: newStatus });
+    setTodoList(todoList.map(task => task.id === id ? { ...task, status: newStatus } : task));
   };
 
-  const handleDeleteTask = (id) => {
+  const handleDeleteTask = async (id) => {
+    await deleteDoc(doc(db, "tasks", id));
     setTodoList(todoList.filter(task => task.id !== id));
   };
 
@@ -38,11 +56,11 @@ const App = () => {
         renderItem={({ item }) => (
           <View style={styles.taskWrapper}>
             <Checkbox
-              value={item.status}
+              value={item.status === 'done'}
               onValueChange={() => handleToggleStatus(item.id)}
               style={styles.checkbox}
             />
-            <Text style={[styles.taskText, item.status && styles.completedTask]}>{item.title}</Text>
+            <Text style={[styles.taskText, item.status === 'done' && styles.completedTask]}>{item.title}</Text>
             <TouchableOpacity onPress={() => handleDeleteTask(item.id)}>
               <MaterialCommunityIcons name="delete-outline" size={24} color="red" />
             </TouchableOpacity>
@@ -51,7 +69,7 @@ const App = () => {
       />
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   wrapper: {
