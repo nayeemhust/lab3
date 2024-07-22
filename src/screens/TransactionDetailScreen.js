@@ -1,4 +1,3 @@
-// src/screens/TransactionDetailScreen.js
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 
@@ -7,16 +6,18 @@ const TransactionDetailScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Transaction Detail</Text>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Name:</Text>
+      <Text style={styles.header}>Details</Text>
+      <View style={styles.details}>
+        <Text style={styles.label}>Merchant:</Text>
         <Text style={styles.value}>{transaction.name}</Text>
         <Text style={styles.label}>Amount:</Text>
         <Text style={styles.value}>{transaction.amount}</Text>
         <Text style={styles.label}>Date:</Text>
         <Text style={styles.value}>{transaction.date}</Text>
+        <Text style={styles.label}>Place:</Text>
+        <Text style={styles.value}>{transaction.location}</Text>
       </View>
-      <Button title="Edit" onPress={() => console.log('Edit Transaction')} />
+      <Button title="Modify" onPress={() => console.log('Edit Transaction')} />
     </View>
   );
 };
@@ -24,25 +25,25 @@ const TransactionDetailScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#F9F9F9',
+    padding: 18,
+    backgroundColor: '#F4F4F4',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
+  header: {
+    fontSize: 26,
+    fontWeight: '600',
+    marginBottom: 18,
   },
-  detailContainer: {
-    marginBottom: 16,
+  details: {
+    marginBottom: 20,
   },
   label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
+    fontSize: 18,
+    fontWeight: '500',
+    marginBottom: 5,
   },
   value: {
-    fontSize: 16,
-    marginBottom: 12,
+    fontSize: 18,
+    marginBottom: 15,
   },
 });
 

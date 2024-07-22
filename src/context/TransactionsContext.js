@@ -2,7 +2,6 @@ import React, { createContext, useState } from 'react';
 import { transactions as initialTransactions } from '../data/transactions';
 
 export const TransactionsContext = createContext();
-
 const TransactionsProvider = ({ children }) => {
   const [transactions, setTransactions] = useState(initialTransactions);
 
@@ -12,5 +11,4 @@ const TransactionsProvider = ({ children }) => {
     </TransactionsContext.Provider>
   );
 };
-
 export default TransactionsProvider;

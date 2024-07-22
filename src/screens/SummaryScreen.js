@@ -1,26 +1,38 @@
-// src/screens/SummaryScreen.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { mockData } from '../data/transactions';
+
+const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
 
 const SummaryScreen = () => {
-  const totalExpenses = '$1500.00';
-  const totalIncome = '$3000.00';
-  const balance = '$1500.00';
+  const totalCount = mockData.length;
+  const totalAmount = mockData.reduce((total, transaction) => total + parseFloat(transaction.amount.slice(1)), 0);
+
+  const amounts = mockData.map(transaction => parseFloat(transaction.amount.slice(1)));
+  const highestAmount = Math.max(...amounts);
+  const lowestAmount = Math.min(...amounts);
+
+  const highestTransaction = mockData.find(transaction => parseFloat(transaction.amount.slice(1)) === highestAmount);
+  const lowestTransaction = mockData.find(transaction => parseFloat(transaction.amount.slice(1)) === lowestAmount);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Summary</Text>
-      <View style={styles.summaryCard}>
-        <Text style={styles.cardTitle}>Total Expenses</Text>
-        <Text style={styles.cardValue}>{totalExpenses}</Text>
+      <Text style={styles.header}>Overview</Text>
+      <View style={styles.card}>
+        <Text style={styles.label}>Transaction Count</Text>
+        <Text style={styles.value}>{totalCount}</Text>
       </View>
-      <View style={styles.summaryCard}>
-        <Text style={styles.cardTitle}>Total Income</Text>
-        <Text style={styles.cardValue}>{totalIncome}</Text>
+      <View style={styles.card}>
+        <Text style={styles.label}>Total Spent</Text>
+        <Text style={styles.value}>{formatCurrency(totalAmount)}</Text>
       </View>
-      <View style={styles.summaryCard}>
-        <Text style={styles.cardTitle}>Balance</Text>
-        <Text style={styles.cardValue}>{balance}</Text>
+      <View style={styles.card}>
+        <Text style={styles.label}>Max Spending</Text>
+        <Text style={styles.value}>{formatCurrency(highestAmount)} ({highestTransaction.name})</Text>
+      </View>
+      <View style={styles.card}>
+        <Text style={styles.label}>Min Spending</Text>
+        <Text style={styles.value}>{formatCurrency(lowestAmount)} ({lowestTransaction.name})</Text>
       </View>
     </View>
   );
@@ -32,29 +44,29 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#F9F9F9',
   },
-  title: {
+  header: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: 20,
   },
-  summaryCard: {
+  card: {
     backgroundColor: '#FFFFFF',
-    padding: 16,
+    padding: 14,
     borderRadius: 8,
-    marginBottom: 16,
+    marginBottom: 18,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
+  label: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 6,
   },
-  cardValue: {
-    fontSize: 24,
+  value: {
+    fontSize: 22,
     color: '#6200EE',
   },
 });
